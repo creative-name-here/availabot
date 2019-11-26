@@ -20,7 +20,7 @@ func DefaultHandler(message *tbot.Message) {
 	now := time.Now()
 	telegramUserID := strconv.FormatInt(int64(message.From.ID), 10)
 
-	baseURL, err := url.Parse(message.Text())
+	baseURL, err := url.Parse(os.Getenv("BASE_URL"))
 	if err != nil {
 		log.Println(err)
 	}
