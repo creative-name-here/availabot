@@ -77,7 +77,12 @@ func main() {
 		log.Fatal(http.ListenAndServe("0.0.0.0:8081", nil))
 	}()
 
-	bot, err := tbot.NewServer(os.Getenv("TELEGRAM_TOKEN"))
+	tgramToken := os.Getenv("TELEGRAM_TOKEN")
+	if tgramToken == "" {
+		log.Fatal("missing env var TELEGRAM_TOKEN")
+	}
+
+	bot, err := tbot.NewServer(tgramToken)
 	if err != nil {
 		log.Fatal("unable to start bot server: ", err)
 	}
