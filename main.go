@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"time"
@@ -19,8 +20,13 @@ func DefaultHandler(message *tbot.Message) {
 	now := time.Now()
 	telegramUserID := strconv.FormatInt(int64(message.From.ID), 10)
 
+	baseURL, err := url.Parse(message.Text())
+	if err != nil {
+		log.Println(err)
+	}
+
 	if !calcheck.IsAuthenticated(telegramUserID) {
-		authURL, err := calcheck.StartAuthFlow(telegramUserID)
+		authURL, err := calcheck.StartAuthFlow(telegramUserID, baseURL)
 		if err != nil {
 			log.Println(err)
 			message.Replyf("oops: %v", err)

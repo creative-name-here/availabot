@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"net/url"
 	"os"
 	"sync"
 	"time"
@@ -36,7 +37,7 @@ var config = oauth2.Config{
 }
 
 // StartAuthFlow returns an oauth URL with a CSRF token and the Telegram user ID
-func StartAuthFlow(telegramUserID string) (string, error) {
+func StartAuthFlow(telegramUserID string, baseURL *url.URL) (string, error) {
 	cacheLock.Lock()
 	defer cacheLock.Unlock()
 
@@ -49,6 +50,11 @@ func StartAuthFlow(telegramUserID string) (string, error) {
 	state, err := encodeOAuthState(info)
 	if err != nil {
 		return "", err
+	}
+
+	if baseURL != nil {
+		path, _ := url.Parse("/oauth2")
+		config.RedirectURL = baseURL.ResolveReference(path).String()
 	}
 
 	return config.AuthCodeURL(
