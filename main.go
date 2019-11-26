@@ -78,6 +78,10 @@ func writeHTTP(w http.ResponseWriter, status int, body string) {
 }
 
 func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		writeHTTP(w, 200, os.Getenv("GOOGLE_SITE_VERIFICATION"))
+	})
+
 	http.HandleFunc("/oauth2", OAuthHandler)
 	go func() {
 		log.Fatal(http.ListenAndServe("0.0.0.0:8081", nil))
